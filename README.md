@@ -1,7 +1,7 @@
 # YAAPi-nf
 A yeast assembly and annotation pipeline for use with Illumina PE reads.
 
-Pull Metschnikowia aff. pulcherrima strain UCD127 Illumina PE WGS data from ENA.
+Pull Metschnikowia aff. pulcherrima strain UCD127 Illumina PE WGS data from ENA (https://pmc.ncbi.nlm.nih.gov/articles/PMC6013633/).
 ```bash
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR159/098/SRR15987198/SRR15987198_2.fastq.gz
 wget -nc ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR159/098/SRR15987198/SRR15987198_1.fastq.gz
