@@ -8,12 +8,14 @@ process FASTQC {
 
     input:
     tuple val(sample_id), path(reads)
+    val(stage)
 
     output:
-    path "*_fastqc.{zip,html}", emit: fastqc_results
+    path "*", emit: fastqc_results
 
     script:
     """
-    fastqc -q ${reads}
+    mkdir ./${stage}
+    fastqc -q ${reads} --outdir ./${stage}
     """
 }

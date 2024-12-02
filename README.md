@@ -15,36 +15,44 @@ sbatch yaapi.sh
 ## Workflow
 
 ### Read QC
-FastQC (pre & post trimming)
-Trimmomatic
-Jellyfish & GenomeScope2 (kmer analysis)
-clumpify (read deduplications)?
+- FastQC (pre & post trimming)
+- Trimmomatic
+- Jellyfish & GenomeScope2 (kmer analysis)
+- clumpify (read deduplications)?
 
 ### Assembly
-SPAdes
-ABySS ?
-MEGAHIT ?
+- SPAdes
+- ABySS ?
+- MEGAHIT ?
 
 ### Assembly QC
-QUAST
-GFAstats
-BUSCO
-KAT
-Kraken2 (contamination check)
-BLAST (organelle check)
-ITSx (identify ITS region)
-BLAST (species estimation)
+- QUAST
+- GFAstats
+- BUSCO
+- KAT
+- Kraken2 (contamination check)
+- BLAST (organelle check)
+- ITSx (identify ITS region)
+- BLAST (species estimation)
 
 ### Annotation
-RepeatMasker
-Funannotate
-InterProScan
+- RepeatMasker
+- Funannotate
+- InterProScan
 
 ## To do:
-- Add fastqc (pre & post filter)
 - Add kmer analysis (pre & post assembly)
 - Add contamination check (kraken2)
 - Add organelle check (mito blast)
+- Add QUAST
+- Add ITSx
+- Add ITS BLAST
+- Add clumpify
+- Add similar species proteomes download
+- Add ABySS
+- Add MEGAHIT
+- Add assembly comparisons
+- Add InterProScan
 - Add additional parameters
 - Add help message in `main.nf` and documentation of usage in repo
 - Add setup script (check & install conda/nextflow on hpc), config file, conditionals to submission script (needed? write simple bash pipeline to check)
@@ -54,3 +62,4 @@ InterProScan
 
 ### Done:
 - Add funannotate
+- Add fastqc (pre & post filter)
