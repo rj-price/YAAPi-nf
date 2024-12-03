@@ -11,7 +11,7 @@ process BUSCO {
 
     output:
     path "${sample_id}_busco"
-    path "${sample_id}_busco/short_summary.*${sample_id}.txt", emit: summary
+    path "${sample_id}_busco/short_summary.*${sample_id}*.txt", emit: summary
 
     script:
     """
