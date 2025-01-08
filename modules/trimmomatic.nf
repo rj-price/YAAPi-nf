@@ -1,8 +1,8 @@
 process TRIMMOMATIC {
     tag "Trimmomatic on $sample_id"
     container "quay.io/biocontainers/trimmomatic:0.39--hdfd78af_2"
-    publishDir "${params.outdir}/trimmed", mode: 'copy'
-    cpus = 4
+    publishDir "${params.outdir}/${sample_id}/trimmed", mode: 'copy'
+    cpus = 2
     memory = 1.GB
     queue = 'medium'
 
@@ -11,7 +11,6 @@ process TRIMMOMATIC {
 
     output:
     tuple val(sample_id), path("*_paired_*.fastq.gz"), emit: trimmed_reads
-    path "*_unpaired_*.fastq.gz"
 
     script:
     """

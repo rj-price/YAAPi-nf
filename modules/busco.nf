@@ -1,7 +1,7 @@
 process BUSCO {
     tag "BUSCO on $sample_id"
     container 'community.wave.seqera.io/library/busco:5.2.2--b38cf04af6adc85b'
-    publishDir "${params.outdir}/busco", mode: 'copy'
+    publishDir "${params.outdir}/${sample_id}/busco", mode: 'copy'
     cpus = 8
     memory = 3.GB
     queue = 'medium'
