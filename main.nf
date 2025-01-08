@@ -12,7 +12,7 @@ include { TRIMMOMATIC } from './modules/trimmomatic'
 include { FASTQC as FASTQC_TRIMMED } from './modules/fastqc'
 include { SPADES } from './modules/spades'
 include { GFASTATS } from './modules/gfastats'
-include { FUNANNOTATE } from './modules/funannotate'
+//include { FUNANNOTATE } from './modules/funannotate'
 include { BUSCO } from './modules/busco'
 include { MULTIQC } from './modules/multiqc'
 
@@ -36,7 +36,7 @@ workflow {
     GFASTATS(SPADES.out.scaffolds)
 
     // Predict genes
-    FUNANNOTATE(SPADES.out.scaffolds, params.busco_db)
+    //FUNANNOTATE(SPADES.out.scaffolds, params.busco_db)
 
     // Assess genome completeness
     BUSCO(SPADES.out.scaffolds)
