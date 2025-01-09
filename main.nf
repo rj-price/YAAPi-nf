@@ -10,10 +10,12 @@ params.busco_db     = "/mnt/shared/scratch/jnprice/apps/funannotate_db/saccharom
 include { FASTQC as FASTQC_RAW } from './modules/fastqc'
 include { TRIMMOMATIC } from './modules/trimmomatic'
 include { FASTQC as FASTQC_TRIMMED } from './modules/fastqc'
+include { JELLYFISH } from './modules/jellyfish'
 include { SPADES } from './modules/spades'
 include { GFASTATS } from './modules/gfastats'
-//include { FUNANNOTATE } from './modules/funannotate'
 include { BUSCO } from './modules/busco'
+include { MERQURY } from './modules/merqury'
+//include { FUNANNOTATE } from './modules/funannotate'
 include { MULTIQC } from './modules/multiqc'
 
 workflow {
@@ -29,17 +31,23 @@ workflow {
     // Run FastQC on trimmed reads
     FASTQC_TRIMMED(TRIMMOMATIC.out.trimmed_reads, 'trimmed')
 
+    // Jellyfish and GenomeScope2
+    JELLYFISH(TRIMMOMATIC.out.trimmed_reads)
+
     // Assemble genome
     SPADES(TRIMMOMATIC.out.trimmed_reads)
 
     // Assess assembly quality
     GFASTATS(SPADES.out.scaffolds)
 
-    // Predict genes
-    //FUNANNOTATE(SPADES.out.scaffolds, params.busco_db)
-
     // Assess genome completeness
     BUSCO(SPADES.out.scaffolds)
+
+    // Merqury
+    MERQURY(TRIMMOMATIC.out.trimmed_reads, SPADES.out.scaffolds)
+
+    // Predict genes
+    //FUNANNOTATE(SPADES.out.scaffolds, params.busco_db)
 
     // Collect QC reports
     multiqc_files = Channel.empty()

@@ -18,7 +18,6 @@ sbatch yaapi.sh
 - FastQC (pre & post trimming)
 - Trimmomatic
 - Jellyfish & GenomeScope2 (kmer analysis)
-- clumpify (read deduplications)?
 
 ### Assembly
 - SPAdes
@@ -41,16 +40,10 @@ sbatch yaapi.sh
 - InterProScan
 
 ## To do:
-- Add kmer analysis (pre & post assembly)
-- Add contamination check (kraken2)
-- Add organelle check (mito blast)
 - Add QUAST
 - Add ITSx
 - Add ITS BLAST
-- Add clumpify
 - Add similar species proteomes download
-- Add ABySS
-- Add MEGAHIT
 - Add assembly comparisons
 - Add InterProScan
 - Add additional parameters
@@ -59,7 +52,11 @@ sbatch yaapi.sh
 - Add samplesheet integration to process multiple samples
 
 ### Test:
+- Add MEGAHIT
+- Add contamination check (kraken2)
+- Add organelle check (mito blast)
 
 ### Done:
 - Add funannotate
 - Add fastqc (pre & post filter)
+- Add kmer analysis (pre & post assembly)
