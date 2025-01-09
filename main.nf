@@ -6,6 +6,7 @@ nextflow.enable.dsl = 2
 params.reads        = "${launchDir}/data/*{1,2}.f*q.gz"
 params.outdir       = "${launchDir}/results"
 params.busco_db     = "/mnt/shared/scratch/jnprice/apps/funannotate_db/saccharomyceta_odb9"
+params.kraken2_db   = "/mnt/apps/users/jnprice/databases/k2_pluspf_16gb_20240112"
 
 include { FASTQC as FASTQC_RAW } from './modules/fastqc'
 include { TRIMMOMATIC } from './modules/trimmomatic'
@@ -15,6 +16,7 @@ include { SPADES } from './modules/spades'
 include { GFASTATS } from './modules/gfastats'
 include { BUSCO } from './modules/busco'
 include { MERQURY } from './modules/merqury'
+include { KRAKEN2 } from './modules/kraken2'
 //include { FUNANNOTATE } from './modules/funannotate'
 include { MULTIQC } from './modules/multiqc'
 
@@ -45,6 +47,9 @@ workflow {
 
     // Merqury
     MERQURY(TRIMMOMATIC.out.trimmed_reads, SPADES.out.scaffolds)
+
+    // Kraken2 for contamination check
+    KRAKEN2(SPADES.out.scaffolds, params.kraken2_db)
 
     // Predict genes
     //FUNANNOTATE(SPADES.out.scaffolds, params.busco_db)

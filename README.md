@@ -53,10 +53,10 @@ sbatch yaapi.sh
 
 ### Test:
 - Add MEGAHIT
-- Add contamination check (kraken2)
 - Add organelle check (mito blast)
 
 ### Done:
 - Add funannotate
 - Add fastqc (pre & post filter)
 - Add kmer analysis (pre & post assembly)
+- Add contamination check (kraken2)
