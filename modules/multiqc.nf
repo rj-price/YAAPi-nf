@@ -1,6 +1,6 @@
 process MULTIQC {
     container 'community.wave.seqera.io/library/multiqc:1.25.1--dc1968330462e945'
-    publishDir "${params.outdir}/${sample_id}/multiqc", mode: 'copy'
+    publishDir "${params.outdir}/multiqc", mode: 'copy'
     cpus = 2
     memory = 1.GB
     queue = 'short'
