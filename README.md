@@ -48,7 +48,6 @@ sbatch yaapi.sh
 - Add samplesheet integration to process multiple samples
 
 ### Test:
-- Add organelle check (mito blast)
 
 ### Done:
 - Add funannotate
@@ -56,3 +55,4 @@ sbatch yaapi.sh
 - Add kmer analysis (pre & post assembly)
 - Add contamination check (kraken2)
 - Add MEGAHIT
+- Add organelle check (mito blast)

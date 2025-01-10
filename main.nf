@@ -7,6 +7,7 @@ params.reads        = "${launchDir}/data/*{1,2}.f*q.gz"
 params.outdir       = "${launchDir}/results"
 params.busco_db     = "/mnt/shared/scratch/jnprice/apps/funannotate_db/saccharomyceta_odb9"
 params.kraken2_db   = "/mnt/apps/users/jnprice/databases/k2_pluspf_16gb_20240112"
+params.mito_db      = "/mnt/apps/users/jnprice/databases/organelle_blast_db"
 
 include { FASTQC as FASTQC_RAW } from './modules/fastqc'
 include { TRIMMOMATIC } from './modules/trimmomatic'
@@ -17,6 +18,7 @@ include { GFASTATS } from './modules/gfastats'
 include { BUSCO } from './modules/busco'
 include { MERQURY } from './modules/merqury'
 include { KRAKEN2 } from './modules/kraken2'
+include { MITO_CHECK } from './modules/mito_check'
 //include { FUNANNOTATE } from './modules/funannotate'
 include { MULTIQC } from './modules/multiqc'
 
@@ -50,6 +52,9 @@ workflow {
 
     // Kraken2 for contamination check
     KRAKEN2(MEGAHIT.out.scaffolds, params.kraken2_db)
+
+    // BLASTn for organelle check
+    MITO_CHECK(MEGAHIT.out.scaffolds, params.mito_db)
 
     // Predict genes
     //FUNANNOTATE(SPADES.out.scaffolds, params.busco_db)
