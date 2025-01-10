@@ -19,16 +19,12 @@ sbatch yaapi.sh
 - Trimmomatic
 - Jellyfish & GenomeScope2 (kmer analysis)
 
-### Assembly
-- SPAdes
-- ABySS ?
-- MEGAHIT ?
-
-### Assembly QC
+### Assembly & QC
+- MEGAHIT
 - QUAST
 - GFAstats
 - BUSCO
-- KAT
+- MERQURY
 - Kraken2 (contamination check)
 - BLAST (organelle check)
 - ITSx (identify ITS region)
@@ -52,7 +48,6 @@ sbatch yaapi.sh
 - Add samplesheet integration to process multiple samples
 
 ### Test:
-- Add MEGAHIT
 - Add organelle check (mito blast)
 
 ### Done:
@@ -60,3 +55,4 @@ sbatch yaapi.sh
 - Add fastqc (pre & post filter)
 - Add kmer analysis (pre & post assembly)
 - Add contamination check (kraken2)
+- Add MEGAHIT

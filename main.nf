@@ -12,7 +12,7 @@ include { FASTQC as FASTQC_RAW } from './modules/fastqc'
 include { TRIMMOMATIC } from './modules/trimmomatic'
 include { FASTQC as FASTQC_TRIMMED } from './modules/fastqc'
 include { JELLYFISH } from './modules/jellyfish'
-include { SPADES } from './modules/spades'
+include { MEGAHIT } from './modules/megahit'
 include { GFASTATS } from './modules/gfastats'
 include { BUSCO } from './modules/busco'
 include { MERQURY } from './modules/merqury'
@@ -36,20 +36,20 @@ workflow {
     // Jellyfish and GenomeScope2
     JELLYFISH(TRIMMOMATIC.out.trimmed_reads)
 
-    // Assemble genome
-    SPADES(TRIMMOMATIC.out.trimmed_reads)
+    // Assemble with MEGAHIT
+    MEGAHIT(TRIMMOMATIC.out.trimmed_reads)
 
     // Assess assembly quality
-    GFASTATS(SPADES.out.scaffolds)
+    GFASTATS(MEGAHIT.out.scaffolds)
 
     // Assess genome completeness
-    BUSCO(SPADES.out.scaffolds)
+    BUSCO(MEGAHIT.out.scaffolds)
 
     // Merqury
-    MERQURY(TRIMMOMATIC.out.trimmed_reads, SPADES.out.scaffolds)
+    MERQURY(TRIMMOMATIC.out.trimmed_reads, MEGAHIT.out.scaffolds)
 
     // Kraken2 for contamination check
-    KRAKEN2(SPADES.out.scaffolds, params.kraken2_db)
+    KRAKEN2(MEGAHIT.out.scaffolds, params.kraken2_db)
 
     // Predict genes
     //FUNANNOTATE(SPADES.out.scaffolds, params.busco_db)
