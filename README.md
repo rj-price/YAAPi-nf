@@ -1,5 +1,7 @@
 # YAAPi-nf
-A yeast assembly and annotation pipeline for use with Illumina PE reads.
+A Nextflow yeast assembly and annotation pipeline for use with Illumina PE reads.
+
+**\#\#\# WORK IN PROGRESS \#\#\#**
 
 Pull Metschnikowia aff. pulcherrima strain UCD127 Illumina PE WGS data from ENA (https://pmc.ncbi.nlm.nih.gov/articles/PMC6013633/).
 ```bash
@@ -27,16 +29,15 @@ sbatch yaapi.sh
 - MERQURY
 - Kraken2 (contamination check)
 - BLAST (organelle check)
-- ITSx (identify ITS region)
-- BLAST (species estimation)
+- ITSx (identify ITS region)    *to do*
+- BLAST (species estimation)    *to do*
 
 ### Annotation
-- RepeatMasker
-- Funannotate
-- InterProScan
+- RepeatMasker    *to do*
+- Funannotate    *to do*
+- InterProScan    *to do*
 
 ## To do:
-- Add QUAST
 - Add ITSx
 - Add ITS BLAST
 - Add similar species proteomes download
@@ -48,6 +49,8 @@ sbatch yaapi.sh
 - Add samplesheet integration to process multiple samples
 
 ### Test:
+- Add QUAST
+    - QUAST ran successfully but error with matplotlib cache caused process to fail.
 
 ### Done:
 - Add funannotate

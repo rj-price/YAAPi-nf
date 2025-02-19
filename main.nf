@@ -15,6 +15,7 @@ include { FASTQC as FASTQC_TRIMMED } from './modules/fastqc'
 include { JELLYFISH } from './modules/jellyfish'
 include { MEGAHIT } from './modules/megahit'
 include { GFASTATS } from './modules/gfastats'
+include { QUAST } from './modules/quast'
 include { BUSCO } from './modules/busco'
 include { MERQURY } from './modules/merqury'
 include { KRAKEN2 } from './modules/kraken2'
@@ -43,6 +44,7 @@ workflow {
 
     // Assess assembly quality
     GFASTATS(MEGAHIT.out.scaffolds)
+    QUAST(TRIMMOMATIC.out.trimmed_reads, MEGAHIT.out.scaffolds)
 
     // Assess genome completeness
     BUSCO(MEGAHIT.out.scaffolds)
