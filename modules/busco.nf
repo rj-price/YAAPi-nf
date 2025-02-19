@@ -15,6 +15,6 @@ process BUSCO {
 
     script:
     """
-    busco -i ${scaffolds} -o ${sample_id}_busco -m genome -l fungi_odb10
+    busco -c 8 -i ${scaffolds} -o ${sample_id}_busco -m genome -l fungi_odb10
     """
 }

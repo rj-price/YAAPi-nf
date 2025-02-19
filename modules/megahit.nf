@@ -3,7 +3,7 @@ process MEGAHIT {
     container 'quay.io/biocontainers/megahit:1.2.9--h43eeafb_5'
     publishDir "${params.outdir}/${sample_id}/megahit", mode: 'copy'
     cpus = 4
-    memory = 16.GB
+    memory = 4.GB
     queue = 'long'
 
     input:

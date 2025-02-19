@@ -2,7 +2,7 @@ process JELLYFISH {
     container 'community.wave.seqera.io/library/genomescope2_jellyfish_gzip:efb795d20a6993c4'
     publishDir "${params.outdir}/${sample_id}/jellyfish", mode: 'copy'
     cpus = 4
-    memory = { 8.GB * task.attempt }
+    memory = { 6.GB * task.attempt }
     queue = 'medium'
     
     input:
