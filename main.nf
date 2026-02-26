@@ -39,6 +39,28 @@ if (!params.input) {
     exit 1
 }
 
+// Log parameter summary
+log.info """
+    ========================================================================
+    ${workflow.manifest.name}  ~  version ${workflow.manifest.version}
+    ========================================================================
+    input            : ${params.input}
+    outdir           : ${params.outdir}
+    busco_db         : ${params.busco_db}
+    kraken2_db       : ${params.kraken2_db}
+    mito_db          : ${params.mito_db}
+    busco_lineage    : ${params.busco_lineage}
+    kmer_length      : ${params.kmer_length}
+    ploidy           : ${params.ploidy}
+    skip_annotation  : ${params.skip_annotation}
+    ========================================================================
+    Run Name         : ${workflow.runName}
+    Executor         : ${workflow.executor}
+    Profile          : ${workflow.profile}
+    Container        : ${workflow.containerEngine}
+    ========================================================================
+    """.stripIndent()
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT SUBWORKFLOWS / MODULES
