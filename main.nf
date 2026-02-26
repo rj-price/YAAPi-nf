@@ -21,6 +21,7 @@ def helpMessage() {
       --busco_lineage [str]         BUSCO lineage [default: fungi_odb10]
       --kmer_length [int]           K-mer length for Jellyfish/Merqury [default: 21]
       --ploidy [int]                Ploidy for Jellyfish/GenomeScope2 [default: 2]
+      --skip_annotation [bool]      Skip Funannotate gene prediction [default: false]
       --help                        Display this help message
     """.stripIndent()
 }
@@ -46,6 +47,7 @@ if (!params.reads) {
 
 include { QUALITY_CONTROL     } from './subworkflows/quality_control'
 include { ASSEMBLY_EVALUATION } from './subworkflows/assembly_evaluation'
+include { ANNOTATION          } from './subworkflows/annotation'
 include { MULTIQC             } from './modules/multiqc'
 
 /*
@@ -72,7 +74,16 @@ workflow {
     )
     ch_versions = ch_versions.mix(ASSEMBLY_EVALUATION.out.versions)
 
-    // 3. MultiQC
+    // 3. Run Annotation (optional)
+    if (!params.skip_annotation) {
+        ANNOTATION(
+            ASSEMBLY_EVALUATION.out.scaffolds,
+            params.busco_db
+        )
+        ch_versions = ch_versions.mix(ANNOTATION.out.versions)
+    }
+
+    // 4. MultiQC
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(
         QUALITY_CONTROL.out.fastqc_raw.collect(),

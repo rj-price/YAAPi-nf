@@ -71,6 +71,11 @@
                     "type": "integer",
                     "default": 2,
                     "description": "Expected ploidy for GenomeScope2"
+                },
+                "skip_annotation": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip Funannotate gene prediction"
                 }
             }
         }

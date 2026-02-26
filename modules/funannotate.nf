@@ -1,34 +1,44 @@
 process FUNANNOTATE {
     tag "Funannotate on $sample_id"
     container 'nextgenusfs/funannotate:v1.8.17'
-    publishDir "${params.outdir}/funannotate", mode: 'copy'
-    cpus = 4
-    memory = 20.GB
-    queue = 'long'
-    
+
     input:
     tuple val(sample_id), path(assembly)
     path busco_db
     
     output:
-    tuple val(sample_id), path("${prefix}_sorted.fasta"), emit: sorted_assembly
-    tuple val(sample_id), path("${prefix}_masked.fasta"), emit: masked_assembly
-    tuple val(sample_id), path("${prefix}"), emit: annotations
+    tuple val(sample_id), path("${sample_id}_sorted.fasta"), emit: sorted_assembly
+    tuple val(sample_id), path("${sample_id}_masked.fasta"), emit: masked_assembly
+    tuple val(sample_id), path("${sample_id}/"),           emit: annotation_dir
+    path "versions.yml"                                   , emit: versions
 
     script:
-    prefix = assembly.baseName
+    // Ensure we use sample_id for prefixing to avoid collisions if multiple assemblies are run
     """
+    # Set FUNANNOTATE_DB environment variable if path is provided
+    export FUNANNOTATE_DB=\$(readlink -f ${busco_db})
+
     # Clean
-    funannotate clean -i ${assembly} -o "${prefix}_clean.fasta"
+    funannotate clean -i ${assembly} -o "${sample_id}_clean.fasta"
 
     # Sort
-    funannotate sort -i "${prefix}_clean.fasta" -o "${prefix}_sorted.fasta" -b contig --minlen 500
+    funannotate sort -i "${sample_id}_clean.fasta" -o "${sample_id}_sorted.fasta" -b contig --minlen 500
 
     # Mask
-    funannotate mask -i "${prefix}_sorted.fasta" -o "${prefix}_masked.fasta"
+    funannotate mask -i "${sample_id}_sorted.fasta" -o "${sample_id}_masked.fasta"
 
     # Predict
-    funannotate predict -i "${prefix}_masked.fasta" -o ${prefix} -s "${prefix}" --cpus ${task.cpus} \
-        --augustus_species yeast --busco_seed_species saccharomyces
+    funannotate predict \\
+        -i "${sample_id}_masked.fasta" \\
+        -o ${sample_id} \\
+        -s "${sample_id}" \\
+        --cpus ${task.cpus} \\
+        --augustus_species yeast \\
+        --busco_seed_species saccharomyces
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        funannotate: \$(funannotate --version 2>&1 | sed 's/funannotate v//')
+    END_VERSIONS
     """
 }
