@@ -8,10 +8,10 @@ def helpMessage() {
     YAAPi-nf: Yeast Assembly and Annotation Pipeline
     ================================================
     Usage:
-    nextflow run main.nf --reads '/path/to/data/*{1,2}.fastq.gz' --outdir '/path/to/results'
+    nextflow run main.nf --input '/path/to/samplesheet.csv' --outdir '/path/to/results'
 
     Mandatory arguments:
-      --reads [path]                Path to input reads (must be quoted)
+      --input [path]                Path to input samplesheet (CSV: sample,fastq_1,fastq_2)
 
     Optional arguments:
       --outdir [path]               The output directory [default: ./results]
@@ -33,8 +33,8 @@ if (params.help) {
 }
 
 // Validate mandatory parameters
-if (!params.reads) {
-    log.error "ERROR: Mandatory parameter '--reads' is not defined."
+if (!params.input) {
+    log.error "ERROR: Mandatory parameter '--input' is not defined."
     helpMessage()
     exit 1
 }
@@ -45,6 +45,7 @@ if (!params.reads) {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { INPUT_CHECK         } from './subworkflows/input_check'
 include { QUALITY_CONTROL     } from './subworkflows/quality_control'
 include { ASSEMBLY_EVALUATION } from './subworkflows/assembly_evaluation'
 include { ANNOTATION          } from './subworkflows/annotation'
@@ -59,11 +60,12 @@ include { MULTIQC             } from './modules/multiqc'
 workflow {
     ch_versions = Channel.empty()
 
-    // Input reads
-    ch_read_pairs = Channel.fromFilePairs(params.reads, checkIfExists: true)
+    // 0. Input check
+    INPUT_CHECK(params.input)
+    ch_reads = INPUT_CHECK.out.reads
 
     // 1. Run Quality Control
-    QUALITY_CONTROL(ch_read_pairs)
+    QUALITY_CONTROL(ch_reads)
     ch_versions = ch_versions.mix(QUALITY_CONTROL.out.versions)
 
     // 2. Run Assembly and Evaluation
@@ -90,7 +92,6 @@ workflow {
         QUALITY_CONTROL.out.fastqc_trimmed.collect(),
         QUALITY_CONTROL.out.jellyfish_sum.collect(),
         ASSEMBLY_EVALUATION.out.busco_summary.collect(),
-        ASSEMBLY_EVALUATION.out.quast_results.collect(),
         ASSEMBLY_EVALUATION.out.kraken_report.collect(),
         ch_versions.unique().collectFile(name: 'software_versions.yml', storeDir: "${params.outdir}/pipeline_info")
     )

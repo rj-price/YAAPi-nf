@@ -4,7 +4,6 @@
 
 include { MEGAHIT   } from '../modules/megahit'
 include { GFASTATS  } from '../modules/gfastats'
-include { QUAST     } from '../modules/quast'
 include { BUSCO     } from '../modules/busco'
 include { MERQURY   } from '../modules/merqury'
 include { KRAKEN2   } from '../modules/kraken2'
@@ -27,9 +26,6 @@ workflow ASSEMBLY_EVALUATION {
     GFASTATS(MEGAHIT.out.scaffolds)
     ch_versions = ch_versions.mix(GFASTATS.out.versions)
 
-    QUAST(ch_reads, MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(QUAST.out.versions)
-
     // 3. Completeness
     BUSCO(MEGAHIT.out.scaffolds)
     ch_versions = ch_versions.mix(BUSCO.out.versions)
@@ -47,7 +43,7 @@ workflow ASSEMBLY_EVALUATION {
     emit:
     scaffolds     = MEGAHIT.out.scaffolds
     busco_summary = BUSCO.out.summary
-    quast_results = QUAST.out.results
     kraken_report = KRAKEN2.out.report
     versions      = ch_versions
 }
+
