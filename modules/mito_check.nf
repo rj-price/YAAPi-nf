@@ -1,28 +1,26 @@
 process MITO_CHECK {
+    tag "Mito Check on $sample_id"
     container 'community.wave.seqera.io/library/blast_seqtk:9cca2195d54cc9d0'
-    publishDir "${params.outdir}/${sample_id}/mito_check", mode: 'copy'
-    cpus = 2
-    memory = { 100.MB * task.attempt }
-    queue = 'short'
 
     input:
     tuple val(sample_id), path(assembly)
     path mito_db
 
     output:
-    path "${sample_id}_mito_blast.txt", emit: blast_results
+    path "${sample_id}_mito_blast.txt"  , emit: blast_results
     path "${sample_id}_mito_contigs.fasta", emit: mito_contigs
-    path "${sample_id}_mito_summary.txt", emit: summary
+    path "${sample_id}_mito_summary.txt"  , emit: summary
+    path "versions.yml"                 , emit: versions
 
     script:
     """
     # Run BLAST
-    blastn -query ${assembly} \
-           -db ${mito_db}/mito \
-           -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen" \
-           -num_threads ${task.cpus} \
-           -max_target_seqs 3 \
-           -evalue 1e-6 \
+    blastn -query ${assembly} \\
+           -db ${mito_db}/mito \\
+           -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qlen slen" \\
+           -num_threads ${task.cpus} \\
+           -max_target_seqs 3 \\
+           -evalue 1e-6 \\
            -out ${sample_id}_mito_blast.txt
 
     # Extract mitochondrial contigs
@@ -34,5 +32,11 @@ process MITO_CHECK {
     grep ">" ${sample_id}_mito_contigs.fasta | sed 's/>//' >> ${sample_id}_mito_summary.txt
     echo "" >> ${sample_id}_mito_summary.txt
     echo "Number of potential mitochondrial contigs: \$(grep -c ">" ${sample_id}_mito_contigs.fasta)" >> ${sample_id}_mito_summary.txt
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        blast: \$(blastn -version | head -n 1 | sed 's/blastn: //')
+        seqtk: \$(seqtk 2>&1 | head -n 2 | tail -n 1 | sed 's/Version: //')
+    END_VERSIONS
     """
 }
