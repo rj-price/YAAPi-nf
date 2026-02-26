@@ -40,22 +40,13 @@ if (!params.reads) {
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT MODULES
+    IMPORT SUBWORKFLOWS / MODULES
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { FASTQC as FASTQC_RAW     } from './modules/fastqc'
-include { TRIMMOMATIC               } from './modules/trimmomatic'
-include { FASTQC as FASTQC_TRIMMED } from './modules/fastqc'
-include { JELLYFISH                 } from './modules/jellyfish'
-include { MEGAHIT                   } from './modules/megahit'
-include { GFASTATS                  } from './modules/gfastats'
-include { QUAST                     } from './modules/quast'
-include { BUSCO                     } from './modules/busco'
-include { MERQURY                   } from './modules/merqury'
-include { KRAKEN2                   } from './modules/kraken2'
-include { MITO_CHECK                } from './modules/mito_check'
-include { MULTIQC                   } from './modules/multiqc'
+include { QUALITY_CONTROL     } from './subworkflows/quality_control'
+include { ASSEMBLY_EVALUATION } from './subworkflows/assembly_evaluation'
+include { MULTIQC             } from './modules/multiqc'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,54 +60,27 @@ workflow {
     // Input reads
     ch_read_pairs = Channel.fromFilePairs(params.reads, checkIfExists: true)
 
-    // 1. Quality Control
-    FASTQC_RAW(ch_read_pairs, 'raw')
-    ch_versions = ch_versions.mix(FASTQC_RAW.out.versions)
+    // 1. Run Quality Control
+    QUALITY_CONTROL(ch_read_pairs)
+    ch_versions = ch_versions.mix(QUALITY_CONTROL.out.versions)
 
-    TRIMMOMATIC(ch_read_pairs)
-    ch_versions = ch_versions.mix(TRIMMOMATIC.out.versions)
+    // 2. Run Assembly and Evaluation
+    ASSEMBLY_EVALUATION(
+        QUALITY_CONTROL.out.trimmed_reads,
+        params.kraken2_db,
+        params.mito_db
+    )
+    ch_versions = ch_versions.mix(ASSEMBLY_EVALUATION.out.versions)
 
-    FASTQC_TRIMMED(TRIMMOMATIC.out.trimmed_reads, 'trimmed')
-
-    // 2. K-mer Analysis
-    JELLYFISH(TRIMMOMATIC.out.trimmed_reads)
-    ch_versions = ch_versions.mix(JELLYFISH.out.versions)
-
-    // 3. Assembly
-    MEGAHIT(TRIMMOMATIC.out.trimmed_reads)
-    ch_versions = ch_versions.mix(MEGAHIT.out.versions)
-
-    // 4. Assembly Evaluation
-    GFASTATS(MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(GFASTATS.out.versions)
-
-    QUAST(TRIMMOMATIC.out.trimmed_reads, MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(QUAST.out.versions)
-
-    BUSCO(MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(BUSCO.out.versions)
-
-    MERQURY(TRIMMOMATIC.out.trimmed_reads, MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(MERQURY.out.versions)
-
-    // 5. Taxonomy & Organelles
-    KRAKEN2(MEGAHIT.out.scaffolds, params.kraken2_db)
-    ch_versions = ch_versions.mix(KRAKEN2.out.versions)
-
-    MITO_CHECK(MEGAHIT.out.scaffolds, params.mito_db)
-    ch_versions = ch_versions.mix(MITO_CHECK.out.versions)
-
-    // 6. MultiQC
+    // 3. MultiQC
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(
-        FASTQC_RAW.out.fastqc_results.collect(),
-        FASTQC_TRIMMED.out.fastqc_results.collect(),
-        TRIMMOMATIC.out.versions.collect(),
-        JELLYFISH.out.summary.collect(),
-        MEGAHIT.out.versions.collect(),
-        BUSCO.out.summary.collect(),
-        QUAST.out.results.collect(),
-        KRAKEN2.out.report.collect(),
+        QUALITY_CONTROL.out.fastqc_raw.collect(),
+        QUALITY_CONTROL.out.fastqc_trimmed.collect(),
+        QUALITY_CONTROL.out.jellyfish_sum.collect(),
+        ASSEMBLY_EVALUATION.out.busco_summary.collect(),
+        ASSEMBLY_EVALUATION.out.quast_results.collect(),
+        ASSEMBLY_EVALUATION.out.kraken_report.collect(),
         ch_versions.unique().collectFile(name: 'software_versions.yml', storeDir: "${params.outdir}/pipeline_info")
     )
 
