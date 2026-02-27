@@ -1,7 +1,7 @@
 .nextflow*
 data
 logs
+output
 reads
 results
 work
-slurm-*
