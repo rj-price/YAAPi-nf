@@ -94,12 +94,15 @@ workflow {
 
     // 3. Run Annotation (optional)
     ch_annotation_versions = Channel.empty()
+    ch_busco_prot_summary = Channel.empty()
     if (!params.skip_annotation) {
         ANNOTATION(
             ASSEMBLY_EVALUATION.out.scaffolds,
-            params.funannotate_db
+            params.funannotate_db,
+            params.busco_db
         )
         ch_annotation_versions = ANNOTATION.out.versions
+        ch_busco_prot_summary = ANNOTATION.out.busco_prot_summary
     }
 
     // 4. Software Versions
@@ -117,6 +120,7 @@ workflow {
         QUALITY_CONTROL.out.jellyfish_sum.collect(),
         ASSEMBLY_EVALUATION.out.busco_summary.collect(),
         ASSEMBLY_EVALUATION.out.kraken_report.collect(),
+        ch_busco_prot_summary.collect(),
         ch_collated_versions
     )
 

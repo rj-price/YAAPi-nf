@@ -29,33 +29,13 @@ sbatch yaapi.sh
 - MERQURY
 - Kraken2 (contamination check)
 - BLAST (organelle check)
-- ITSx (identify ITS region)    *to do*
-- BLAST (species estimation)    *to do*
 
 ### Annotation
-- RepeatMasker    *to do*
-- Funannotate    *to do*
-- InterProScan    *to do*
+- RepeatMasker
+- Funannotate
+- InterProScan
 
 ## To do:
-- Add ITSx
-- Add ITS BLAST
-- Add similar species proteomes download
-- Add assembly comparisons
 - Add InterProScan
-- Add additional parameters
 - Add help message in `main.nf` and documentation of usage in repo
 - Add setup script (check & install conda/nextflow on hpc), config file, conditionals to submission script (needed? write simple bash pipeline to check)
-- Add samplesheet integration to process multiple samples
-
-### Test:
-- Add QUAST
-    - QUAST ran successfully but error with matplotlib cache caused process to fail.
-
-### Done:
-- Add funannotate
-- Add fastqc (pre & post filter)
-- Add kmer analysis (pre & post assembly)
-- Add contamination check (kraken2)
-- Add MEGAHIT
-- Add organelle check (mito blast)
