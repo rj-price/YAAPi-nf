@@ -18,6 +18,7 @@ def helpMessage() {
       --busco_db [path]             Path to BUSCO database
       --kraken2_db [path]           Path to Kraken2 database
       --mito_db [path]              Path to Organelle BLAST database
+      --funannotate_db [path]       Path to Funannotate database
       --busco_lineage [str]         BUSCO lineage [default: fungi_odb10]
       --kmer_length [int]           K-mer length for Jellyfish/Merqury [default: 21]
       --ploidy [int]                Ploidy for Jellyfish/GenomeScope2 [default: 2]
@@ -49,6 +50,7 @@ log.info """
     busco_db         : ${params.busco_db}
     kraken2_db       : ${params.kraken2_db}
     mito_db          : ${params.mito_db}
+    funannotate_db   : ${params.funannotate_db}
     busco_lineage    : ${params.busco_lineage}
     kmer_length      : ${params.kmer_length}
     ploidy           : ${params.ploidy}
@@ -94,7 +96,7 @@ workflow {
     if (!params.skip_annotation) {
         ANNOTATION(
             ASSEMBLY_EVALUATION.out.scaffolds,
-            params.busco_db
+            params.funannotate_db
         )
         ch_annotation_versions = ANNOTATION.out.versions
     }

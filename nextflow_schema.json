@@ -49,6 +49,11 @@
                     "type": "string",
                     "format": "directory-path",
                     "description": "Path to Organelle BLAST database"
+                },
+                "funannotate_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Path to Funannotate database"
                 }
             }
         },

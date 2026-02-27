@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #SBATCH -J nf-YAAPi
 #SBATCH --partition=long
-#SBATCH --mem=4G
+#SBATCH --mem=16G
 #SBATCH --cpus-per-task=2
 #SBATCH --output=logs/yaapi_%j.log
 
@@ -16,4 +16,4 @@ nextflow run main.nf \
     --input samplesheet.csv \
     --outdir results \
     -profile slurm,singularity \
-#    -resume
+    -resume

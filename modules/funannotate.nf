@@ -4,7 +4,7 @@ process FUNANNOTATE {
 
     input:
     tuple val(sample_id), path(assembly)
-    path busco_db
+    path funannotate_db
     
     output:
     tuple val(sample_id), path("${sample_id}_sorted.fasta"), emit: sorted_assembly
@@ -13,10 +13,9 @@ process FUNANNOTATE {
     path "versions.yml"                                   , emit: versions
 
     script:
-    // Ensure we use sample_id for prefixing to avoid collisions if multiple assemblies are run
     """
-    # Set FUNANNOTATE_DB environment variable if path is provided
-    export FUNANNOTATE_DB=\$(readlink -f ${busco_db})
+    # Set FUNANNOTATE_DB environment variable
+    export FUNANNOTATE_DB=\$(readlink -f ${funannotate_db})
 
     # Clean
     funannotate clean -i ${assembly} -o "${sample_id}_clean.fasta"
