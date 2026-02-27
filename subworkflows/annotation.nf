@@ -17,15 +17,8 @@ workflow ANNOTATION {
     FUNANNOTATE(ch_assembly, funannotate_db)
     ch_versions = ch_versions.mix(FUNANNOTATE.out.versions)
 
-    // Get protein file from funannotate output
-    ch_proteins = FUNANNOTATE.out.annotation_dir
-        .map { sample_id, annotation_dir ->
-            def protein_file = file("${annotation_dir}/predict_results/${sample_id}.proteins.fa", checkIfExists: true)
-            [ sample_id, protein_file ]
-        }
-
     // Annotation QC
-    BUSCO_PROTEOME(ch_proteins, busco_db)
+    BUSCO_PROTEOME(FUNANNOTATE.out.proteins, busco_db)
     ch_versions = ch_versions.mix(BUSCO_PROTEOME.out.versions)
 
     emit:

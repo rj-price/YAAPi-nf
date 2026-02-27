@@ -10,6 +10,7 @@ process FUNANNOTATE {
     tuple val(sample_id), path("${sample_id}_sorted.fasta"), emit: sorted_assembly
     tuple val(sample_id), path("${sample_id}_masked.fasta"), emit: masked_assembly
     tuple val(sample_id), path("${sample_id}/"),           emit: annotation_dir
+    tuple val(sample_id), path("${sample_id}/predict_results/${sample_id}.proteins.fa"), emit: proteins
     path "versions.yml"                                   , emit: versions
 
     script:
