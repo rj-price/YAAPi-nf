@@ -8,7 +8,7 @@ process JELLYFISH {
     output:
     tuple val(sample_id), path("${sample_id}_linear_plot.png"), emit: linear_plot
     tuple val(sample_id), path("${sample_id}_log_plot.png")   , emit: log_plot
-    tuple val(sample_id), path("${sample_id}_summary.txt")    , emit: summary
+    path "${sample_id}_summary.txt"                          , emit: summary
     path "versions.yml"                                      , emit: versions
     
     script:
