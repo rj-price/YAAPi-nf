@@ -126,3 +126,9 @@ workflow {
 
     MULTIQC(ch_multiqc_files.collect())
 }
+
+// Workflow completion notification
+workflow.onComplete {
+    log.info "Pipeline completed at: $workflow.complete"
+    log.info "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
+}
