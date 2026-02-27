@@ -42,7 +42,7 @@ if (!params.input) {
 // Log parameter summary
 log.info """
     ========================================================================
-    ${workflow.manifest.name}  ~  version ${workflow.manifest.version}
+    YAAPi-nf  ~  Yeast Assembly and Annotation Pipeline
     ========================================================================
     input            : ${params.input}
     outdir           : ${params.outdir}
@@ -53,11 +53,6 @@ log.info """
     kmer_length      : ${params.kmer_length}
     ploidy           : ${params.ploidy}
     skip_annotation  : ${params.skip_annotation}
-    ========================================================================
-    Run Name         : ${workflow.runName}
-    Executor         : ${workflow.executor}
-    Profile          : ${workflow.profile}
-    Container        : ${workflow.containerEngine}
     ========================================================================
     """.stripIndent()
 
