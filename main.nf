@@ -15,6 +15,7 @@ def helpMessage() {
 
     Optional arguments:
       --outdir [path]               The output directory [default: ./results]
+      --single_out [bool]           Save all results to a single directory [default: false]
       --busco_db [path]             Path to BUSCO database
       --kraken2_db [path]           Path to Kraken2 database
       --mito_db [path]              Path to Organelle BLAST database
@@ -102,10 +103,10 @@ workflow {
     }
 
     // 4. Software Versions
-    QUALITY_CONTROL.out.versions
+    ch_versions_to_collect = QUALITY_CONTROL.out.versions
         .mix(ASSEMBLY_EVALUATION.out.versions, ch_annotation_versions)
         .unique()
-        .collectFile(name: 'software_versions.yml', storeDir: "${params.outdir}/pipeline_info")
+        .collectFile(name: 'software_versions.yml', storeDir: params.outdir)
         .set { ch_collated_versions }
 
     // 5. MultiQC

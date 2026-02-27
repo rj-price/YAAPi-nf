@@ -27,6 +27,11 @@
                     "description": "The output directory",
                     "default": "./results",
                     "fa_icon": "fas fa-folder-open"
+                },
+                "single_out": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save all results to a single directory"
                 }
             }
         },
