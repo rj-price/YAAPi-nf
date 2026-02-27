@@ -21,8 +21,8 @@ process MERQURY {
     """
     meryl k=${kmer_length} threads=${task.cpus} memory=${task.memory.toGiga()} count output ${sample_id}.meryl ${reads}
 
-    # Attempt to find MERQURY path if not set
-    if [ -z "\$MERQURY" ]; then
+    # Safely handle MERQURY environment variable
+    if [ -z "\${MERQURY:-}" ]; then
         export MERQURY=\$(dirname \$(which merqury.sh))/../share/merqury
     fi
     
