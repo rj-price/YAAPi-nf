@@ -11,14 +11,14 @@ process INTERPROSCAN {
     path "versions.yml", emit: versions
 
     script:
-    def absolute_protein_path = proteins.toAbsolutePath()
     """
     interproscan.sh \\
-        -i ${absolute_protein_path} \\
+        -i \$(readlink -f ${proteins}) \\
         -f tsv,xml \\
         -cpu ${task.cpus} \\
         --goterms \\
-        --disable-precalc
+        --disable-precalc \\
+        --tempdir .
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
