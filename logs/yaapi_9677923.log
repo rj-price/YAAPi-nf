@@ -1,0 +1,14 @@
+[33mNextflow 25.10.4 is available - Please consider updating your version to it(B[m
+
+ N E X T F L O W   ~  version 25.04.2
+
+Launching `main.nf` [mighty_perlman] DSL2 - revision: 7dcbd0064c
+
+WARN: Access to undefined parameter `help` -- Initialise it to a default value eg. `params.help = some_value`
+WARN: Access to undefined parameter `busco_lineage` -- Initialise it to a default value eg. `params.busco_lineage = some_value`
+WARN: Access to undefined parameter `kmer_length` -- Initialise it to a default value eg. `params.kmer_length = some_value`
+WARN: Access to undefined parameter `ploidy` -- Initialise it to a default value eg. `params.ploidy = some_value`
+WARN: Access to undefined parameter `skip_annotation` -- Initialise it to a default value eg. `params.skip_annotation = some_value`
+ERROR ~ Unexpected error [StackOverflowError]
+
+ -- Check '.nextflow.log' file for details

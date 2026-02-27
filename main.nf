@@ -108,6 +108,12 @@ workflow {
     }
 
     // 4. MultiQC
+    // Collect all version files into a single report
+    ch_versions
+        .unique()
+        .collectFile(name: 'software_versions.yml', storeDir: "${params.outdir}/pipeline_info")
+        .set { ch_collated_versions }
+
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(
         QUALITY_CONTROL.out.fastqc_raw.collect(),
@@ -115,7 +121,7 @@ workflow {
         QUALITY_CONTROL.out.jellyfish_sum.collect(),
         ASSEMBLY_EVALUATION.out.busco_summary.collect(),
         ASSEMBLY_EVALUATION.out.kraken_report.collect(),
-        ch_versions.unique().collectFile(name: 'software_versions.yml', storeDir: "${params.outdir}/pipeline_info")
+        ch_collated_versions
     )
 
     MULTIQC(ch_multiqc_files.collect())

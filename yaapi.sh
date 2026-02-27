@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 #SBATCH -J nf-YAAPi
 #SBATCH --partition=long
-# Use 16G for initial run 
 #SBATCH --mem=4G
 #SBATCH --cpus-per-task=2
+#SBATCH --output=logs/yaapi_%j.log
 
-# INPUTS
-Reads=$1
-OutDir=$2
+# Ensure log directory exists
+mkdir -p logs
 
+# Load Nextflow environment (adjust if using a different method like 'module load')
 source activate nextflow
 
-nextflow run main.nf -c ~/cropdiv.config -resume
-#    --reads $ReadsDir \
-#    --outdir $OutDir
+# Run the pipeline
+nextflow run main.nf \
+    --input samplesheet.csv \
+    --outdir results \
+    -profile slurm,singularity \
+#    -resume
