@@ -1,6 +1,6 @@
 process INTERPROSCAN {
     tag "InterProScan on $sample_id"
-    container 'community.wave.seqera.io/library/interproscan:5.71-103.0--he22f84e3d93708a'
+    container 'community.wave.seqera.io/library/interproscan:5.59_91.0--6053fb17325942d2'
 
     input:
     tuple val(sample_id), path(proteins)
@@ -11,9 +11,10 @@ process INTERPROSCAN {
     path "versions.yml", emit: versions
 
     script:
+    def absolute_protein_path = proteins.toAbsolutePath()
     """
     interproscan.sh \\
-        -i ${proteins} \\
+        -i ${absolute_protein_path} \\
         -f tsv,xml \\
         -cpu ${task.cpus} \\
         --goterms \\
