@@ -14,11 +14,11 @@ process BUSCO_PROTEOME {
     script:
     def lineage = params.busco_lineage ?: 'fungi_odb10'
     """
-    busco 
-        -c ${task.cpus} 
-        -i ${proteins} 
-        -o busco_proteome 
-        -m proteome 
+    busco \\
+        -c ${task.cpus} \\
+        -i ${proteins} \\
+        -o busco_proteome \\
+        -m proteome \\
         -l ${lineage}
 
     cat <<-END_VERSIONS > versions.yml

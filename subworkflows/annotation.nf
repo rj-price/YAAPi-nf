@@ -4,7 +4,6 @@
 
 include { FUNANNOTATE     } from '../modules/funannotate'
 include { BUSCO_PROTEOME  } from '../modules/busco_proteome'
-include { INTERPROSCAN    } from '../modules/interproscan'
 
 workflow ANNOTATION {
     take:
@@ -29,12 +28,8 @@ workflow ANNOTATION {
     BUSCO_PROTEOME(ch_proteins, busco_db)
     ch_versions = ch_versions.mix(BUSCO_PROTEOME.out.versions)
 
-    INTERPROSCAN(ch_proteins)
-    ch_versions = ch_versions.mix(INTERPROSCAN.out.versions)
-
     emit:
     annotations       = FUNANNOTATE.out.annotation_dir
     busco_prot_summary= BUSCO_PROTEOME.out.summary
-    interproscan_xml  = INTERPROSCAN.out.xml
     versions          = ch_versions
 }
