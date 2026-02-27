@@ -1,5 +1,7 @@
 .nextflow*
 data
+logs
+reads
 results
 work
 slurm-*

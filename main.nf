@@ -80,15 +80,12 @@ include { MULTIQC             } from './modules/multiqc'
 */
 
 workflow {
-    ch_versions = Channel.empty()
-
     // 0. Input check
     INPUT_CHECK(params.input)
     ch_reads = INPUT_CHECK.out.reads
 
     // 1. Run Quality Control
     QUALITY_CONTROL(ch_reads)
-    ch_versions = ch_versions.mix(QUALITY_CONTROL.out.versions)
 
     // 2. Run Assembly and Evaluation
     ASSEMBLY_EVALUATION(
@@ -96,24 +93,25 @@ workflow {
         params.kraken2_db,
         params.mito_db
     )
-    ch_versions = ch_versions.mix(ASSEMBLY_EVALUATION.out.versions)
 
     // 3. Run Annotation (optional)
+    ch_annotation_versions = Channel.empty()
     if (!params.skip_annotation) {
         ANNOTATION(
             ASSEMBLY_EVALUATION.out.scaffolds,
             params.busco_db
         )
-        ch_versions = ch_versions.mix(ANNOTATION.out.versions)
+        ch_annotation_versions = ANNOTATION.out.versions
     }
 
-    // 4. MultiQC
-    // Collect all version files into a single report
-    ch_versions
+    // 4. Software Versions
+    QUALITY_CONTROL.out.versions
+        .mix(ASSEMBLY_EVALUATION.out.versions, ch_annotation_versions)
         .unique()
         .collectFile(name: 'software_versions.yml', storeDir: "${params.outdir}/pipeline_info")
         .set { ch_collated_versions }
 
+    // 5. MultiQC
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(
         QUALITY_CONTROL.out.fastqc_raw.collect(),

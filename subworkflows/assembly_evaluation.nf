@@ -16,29 +16,27 @@ workflow ASSEMBLY_EVALUATION {
     mito_db      // path
 
     main:
-    ch_versions = Channel.empty()
-
     // 1. Assembly
     MEGAHIT(ch_reads)
-    ch_versions = ch_versions.mix(MEGAHIT.out.versions)
 
     // 2. Statistics
     GFASTATS(MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(GFASTATS.out.versions)
 
     // 3. Completeness
     BUSCO(MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(BUSCO.out.versions)
-
     MERQURY(ch_reads, MEGAHIT.out.scaffolds)
-    ch_versions = ch_versions.mix(MERQURY.out.versions)
 
     // 4. Contamination & Organelles
     KRAKEN2(MEGAHIT.out.scaffolds, kraken2_db)
-    ch_versions = ch_versions.mix(KRAKEN2.out.versions)
-
     MITO_CHECK(MEGAHIT.out.scaffolds, mito_db)
-    ch_versions = ch_versions.mix(MITO_CHECK.out.versions)
+
+    // 5. Versions
+    ch_versions = MEGAHIT.out.versions
+        .mix(GFASTATS.out.versions)
+        .mix(BUSCO.out.versions)
+        .mix(MERQURY.out.versions)
+        .mix(KRAKEN2.out.versions)
+        .mix(MITO_CHECK.out.versions)
 
     emit:
     scaffolds     = MEGAHIT.out.scaffolds
@@ -46,4 +44,3 @@ workflow ASSEMBLY_EVALUATION {
     kraken_report = KRAKEN2.out.report
     versions      = ch_versions
 }
-
