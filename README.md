@@ -1,14 +1,14 @@
 # YAAPi-nf: Yeast Assembly and Annotation Pipeline
 
-**YAAPi-nf** is a modular, production-ready bioinformatics pipeline built with **Nextflow (DSL2)**. It is specifically designed for the de novo assembly and annotation of yeast genomes using Illumina paired-end reads.
+**YAAPi-nf** is a modular, bioinformatics pipeline built with **Nextflow**. It is specifically designed for the _de novo_ assembly and annotation of yeast genomes using Illumina paired-end reads.
 
-The pipeline is highly portable, supporting **Docker**, **Singularity**, and **Conda**, and is optimized for High-Performance Computing (HPC) environments using the **SLURM** scheduler.
+The pipeline is highly portable, supporting **Docker**, **Singularity**, and **Conda**, and is optimised for High-Performance Computing (HPC) environments using the **SLURM** scheduler.
 
 ---
 
 ## 🧬 Pipeline Overview
 
-The pipeline is organized into three main subworkflows:
+The pipeline is organised into three main subworkflows:
 
 1.  **Quality Control & Preprocessing** (`QUALITY_CONTROL`)
     *   Raw read QC (**FastQC**)
@@ -18,13 +18,13 @@ The pipeline is organized into three main subworkflows:
 2.  **Assembly & Evaluation** (`ASSEMBLY_EVALUATION`)
     *   De novo assembly (**MEGAHIT**)
     *   Assembly statistics (**GFAStats**)
-    *   Genome completeness Assessment (**BUSCO** in Genome mode)
+    *   Genome completeness assessment (**BUSCO** in Genome mode)
     *   Reference-free assembly evaluation (**Merqury**)
     *   Taxonomic contamination check (**Kraken2**)
     *   Mitochondrial/Organelle identification (**Mito Check** - BLAST-based)
 3.  **Genome Annotation** (`ANNOTATION`)
-    *   Gene prediction and functional annotation (**Funannotate**)
-    *   Annotation Quality Control (**BUSCO** in Proteome mode)
+    *   Gene prediction and annotation (**Funannotate**)
+    *   Annotation quality control (**BUSCO** in Proteome mode)
 4.  **Reporting**
     *   Aggregation of all QC metrics and logs into a single interactive report (**MultiQC**)
     *   Automatic collection of software versions for reproducibility.
@@ -41,7 +41,7 @@ The pipeline is organized into three main subworkflows:
 
 For HPC users (SLURM), use the provided wrapper script:
 ```bash
-sbatch yaapi.sh
+sbatch yaapi.sh samplesheet.csv ./results
 ```
 
 ---
@@ -89,7 +89,7 @@ SampleB,reads/sampleB_R1.fastq.gz,reads/sampleB_R2.fastq.gz
 
 ## 📂 Outputs
 
-Results are organized by **sample** and then by **process/tool**:
+Results are organised by **sample** and then by **process/tool**:
 
 ```text
 results/
